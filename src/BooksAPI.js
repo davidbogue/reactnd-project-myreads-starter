@@ -41,4 +41,16 @@ export const search = (query, maxResults) =>
     },
     body: JSON.stringify({ query, maxResults })
   }).then(res => res.json())
-    .then(data => data.books)
+    .then(data => {
+      if(data.books && ! data.books.error){
+        // the books API was returning duplicate books.  The following is to filter out duplicates.
+        let uniqueBooks = []
+        data.books.forEach(b => {
+          if (uniqueBooks.findIndex( uniqueBook => (uniqueBook.id === b.id) ) === -1) {
+            uniqueBooks.push(b)
+          }
+        })
+        data.books = uniqueBooks
+      }
+      return data.books
+    })

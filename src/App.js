@@ -3,30 +3,39 @@ import { Route } from 'react-router-dom'
 import { Link } from 'react-router-dom'
 import * as BooksAPI from './BooksAPI'
 import './App.css'
-import BookShelf from "./BookShelf";
+import BookShelf from "./BookShelf"
+import Search from "./Search"
 
 class BooksApp extends React.Component {
   state = {
-    myReads: []
+    myBooks: []
   }
 
   componentDidMount() {
     BooksAPI.getAll().then((books) => {
-      this.setState({ myReads:books })
+      this.setState({ myBooks:books })
     })
   }
 
   updateBook(book, shelf) {
-    book.shelf = shelf;
-    this.setState(state => ({
-      myReads: state.myReads.map(b => (b.id === book.id) ? book : b)
-    }))
+    book.shelf = shelf
+    this.setState( (prevState) => {
+      let bookIndex = prevState.myBooks.findIndex( b => (b.id === book.id) )
+      if (bookIndex > -1) {
+        prevState.myBooks[bookIndex] = book
+      } else {
+        prevState.myBooks.push(book)
+      }
+      return {myBooks: prevState.myBooks}
+    })
+
     BooksAPI.update(book, shelf)
   }
 
   render() {
     return (
       <div className="app">
+
         <Route exact path='/' render={() => (
           <div className="list-books">
             <div className="list-books-title">
@@ -37,7 +46,7 @@ class BooksApp extends React.Component {
                 <BookShelf
                   shelfName="Currently Reading"
                   shelfValue="currentlyReading"
-                  books={this.state.myReads}
+                  books={this.state.myBooks}
                   onUpdateBook={(book, shelf) => {
                     this.updateBook(book,shelf)
                   }}
@@ -45,7 +54,7 @@ class BooksApp extends React.Component {
                 <BookShelf
                   shelfName="Want To Read"
                   shelfValue="wantToRead"
-                  books={this.state.myReads}
+                  books={this.state.myBooks}
                   onUpdateBook={(book, shelf) => {
                     this.updateBook(book,shelf)
                   }}
@@ -53,7 +62,7 @@ class BooksApp extends React.Component {
                 <BookShelf
                   shelfName="Read"
                   shelfValue="read"
-                  books={this.state.myReads}
+                  books={this.state.myBooks}
                   onUpdateBook={(book, shelf) => {
                     this.updateBook(book,shelf)
                   }}
@@ -67,27 +76,13 @@ class BooksApp extends React.Component {
         )}/>
 
         <Route exact path='/search' render={() => (
-          <div className="search-books">
-            <div className="search-books-bar">
-              <Link to='/' className="close-search" >Close</Link>
-              <div className="search-books-input-wrapper">
-                {/*
-                  NOTES: The search from BooksAPI is limited to a particular set of search terms.
-                  You can find these search terms here:
-                  https://github.com/udacity/reactnd-project-myreads-starter/blob/master/SEARCH_TERMS.md
-
-                  However, remember that the BooksAPI.search method DOES search by title or author. So, don't worry if
-                  you don't find a specific author or title. Every search is limited by search terms.
-                */}
-                <input type="text" placeholder="Search by title or author"/>
-
-              </div>
-            </div>
-            <div className="search-books-results">
-              <ol className="books-grid"></ol>
-            </div>
-          </div>
+          <Search myBooks={this.state.myBooks}
+                  onUpdateBook={(book, shelf) => {
+                    this.updateBook(book,shelf)
+                  }}
+          />
         )}/>
+
       </div>
     )
   }
