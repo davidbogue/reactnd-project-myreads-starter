@@ -10,12 +10,12 @@ class BookShelf extends Component {
     shelfName: PropTypes.string.isRequired,
     shelfValue: PropTypes.string.isRequired,
     onUpdateBook: PropTypes.func.isRequired
-  }
+  };
 
   render() {
-    const { books, shelfName, shelfValue, onUpdateBook } = this.props
+    const { books, shelfName, shelfValue, onUpdateBook } = this.props;
 
-    books.sort(sortBy('title'))
+    books.sort(sortBy('title'));
 
     return (
       <div className="bookshelf">

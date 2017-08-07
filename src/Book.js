@@ -5,14 +5,14 @@ class Book extends Component {
   static propTypes = {
     book: PropTypes.object.isRequired,
     onUpdateBook: PropTypes.func.isRequired
-  }
+  };
 
   handleChange = (e) => {
     this.props.onUpdateBook(this.props.book, e.target.value)
-  }
+  };
 
   render() {
-    const { book } = this.props
+    const { book } = this.props;
     let thumbnail = book.imageLinks ? book.imageLinks.smallThumbnail : "/noImage.png"
 
     return (
@@ -25,8 +25,7 @@ class Book extends Component {
                           backgroundImage: `url(${thumbnail})`,
                           backgroundRepeat: 'no-repeat',
                           backgroundPosition: 'center',
-                          backgroundSize: '100%'
-                                                }}>
+                          backgroundSize: '100%'}}>
             </div>
             <div className="book-shelf-changer">
               <select value={book.shelf} onChange={this.handleChange}>

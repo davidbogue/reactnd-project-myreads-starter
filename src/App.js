@@ -9,7 +9,7 @@ import Search from "./Search"
 class BooksApp extends React.Component {
   state = {
     myBooks: []
-  }
+  };
 
   componentDidMount() {
     BooksAPI.getAll().then((books) => {
@@ -18,7 +18,7 @@ class BooksApp extends React.Component {
   }
 
   updateBook(book, shelf) {
-    book.shelf = shelf
+    book.shelf = shelf;
     this.setState( (prevState) => {
       let bookIndex = prevState.myBooks.findIndex( b => (b.id === book.id) )
       if (bookIndex > -1) {
@@ -27,7 +27,7 @@ class BooksApp extends React.Component {
         prevState.myBooks.push(book)
       }
       return {myBooks: prevState.myBooks}
-    })
+    });
 
     BooksAPI.update(book, shelf)
   }
